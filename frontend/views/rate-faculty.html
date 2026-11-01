@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SAUcial - Rate Faculty</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #dae0e6; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
+        select, input, textarea { padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 12px; cursor: pointer; border: none; border-radius: 4px; background-color: #007bff; color: white; }
+        
+        /* Layout for Professor Profile */
+        .prof-card { display: flex; flex-direction: column; align-items: center; margin-top: 20px; padding: 20px; border: 1px solid #eee; border-radius: 8px; background: #f8f9fa; }
+        .prof-stats-container { display: flex; align-items: flex-end; justify-content: center; gap: 15px; margin-top: 10px; width: 100%; max-width: 300px; }
+        .stat-left { text-align: left; font-weight: bold; font-size: 18px; }
+        .stat-right { text-align: right; color: #666; font-size: 14px; padding-bottom: 2px; }
+        
+        /* Glowing Circle Logic */
+        .prof-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 5px solid; background-color: #ddd; }
+        .glow-gold { border-color: #FFD700; box-shadow: 0 0 20px #FFD700; }
+        .glow-silver { border-color: #C0C0C0; box-shadow: 0 0 15px #C0C0C0; }
+        .circle-bronze { border-color: #CD7F32; }
+        .circle-white { border-color: #FFFFFF; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .circle-black { border-color: #000000; }
+        .circle-red { border-color: #FF0000; }
+
+        .review-box { background: white; border: 1px solid #ddd; padding: 10px; margin-top: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/index.html">← Back to Feed</a>
+    <h2>Anonymous Faculty Ratings</h2>
+
+    <!-- Toggle Selection -->
+    <div class="form-group">
+        <label>Select Department</label>
+        <select id="deptSelect" onchange="loadProfessors()">
+            <option value="">-- Choose Department --</option>
+        </select>
+    </div>
+    <div class="form-group" id="profSelectGroup" style="display: none;">
+        <label>Select Faculty</label>
+        <select id="profSelect" onchange="loadProfessorDetails()">
+            <option value="">-- Choose Faculty --</option>
+        </select>
+    </div>
+
+    <!-- Profile & Stats Display -->
+    <div id="profProfile" style="display: none;">
+        <div class="prof-card">
+            <h3 id="profNameDisplay" style="margin-top: 0;"></h3>
+            <!-- Image and Stats directly below it -->
+            <img id="profImgDisplay" src="" class="prof-img" alt="Professor Image">
+            <div class="prof-stats-container">
+                <div class="stat-left">⭐ <span id="avgRatingDisplay"></span></div>
+                <div class="stat-right"><span id="reviewCountDisplay"></span> Reviews</div>
+            </div>
+        </div>
+
+        <!-- Submit Review -->
+        <h3 style="margin-top: 30px;">Leave an Anonymous Review</h3>
+        <form onsubmit="submitReview(event)">
+            <div class="form-group">
+                <label>Rating (1-5)</label>
+                <input type="number" id="ratingInput" min="0" max="5" step="0.5" required>
+            </div>
+            <div class="form-group">
+                <label>Comment</label>
+                <textarea id="commentInput" rows="3" required></textarea>
+            </div>
+            <button type="submit">Submit Anonymously</button>
+        </form>
+
+        <h3 style="margin-top: 30px;">Anonymous Comments</h3>
+        <div id="reviewsList"></div>
+    </div>
+</div>
+
+<script src="/public/js/rate-faculty.js"></script>
+</body>
+</html>

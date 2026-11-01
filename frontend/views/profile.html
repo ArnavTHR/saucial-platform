@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#028090">
+    <title>SAUcial - My Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --oxblood: #028090; 
+            --oxblood-deep: #005c69; 
+            --cream: #f0fbfa; 
+            --paper: #e8f6f3; 
+            --surface: #ffffff; 
+            --ink: #052226; 
+            --muted: rgba(5, 34, 38, 0.6);
+            --gold: #2ea979; 
+            --line: rgba(5, 34, 38, 0.14);
+            --display: "Reddit Sans", sans-serif;
+            --body: "Reddit Sans", sans-serif;
+            --mono: "Reddit Sans", monospace;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: var(--body);
+            font-size: 14px;
+            line-height: 1.5;
+            background: var(--paper);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+        }
+        :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+        a { color: inherit; }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 10px clamp(12px, 3vw, 28px);
+            background: var(--oxblood);
+            border-bottom: 2px solid var(--gold);
+        }
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 14px;
+            font-family: var(--display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--cream);
+        }
+        .logo {
+            display: inline-grid;
+            place-items: center;
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            background: var(--gold);
+            color: var(--surface);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .nav-link {
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            color: rgba(240, 251, 250, 0.85);
+            border-radius: 4px;
+            transition: background .2s, color .2s;
+        }
+        .nav-link:hover { background: rgba(240, 251, 250, 0.12); color: #fff; }
+        .nav-link.current { color: var(--gold); }
+
+        /* ---------- Layout ---------- */
+        .container {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px clamp(12px, 3vw, 28px) 48px;
+            align-items: start;
+        }
+        .main-col { min-width: 0; }
+        .sidebar { display: flex; flex-direction: column; gap: 14px; }
+
+        /* ---------- Profile header ---------- */
+        .profile-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-top: 3px solid var(--oxblood);
+            border-radius: 4px;
+        }
+        .avatar {
+            display: grid;
+            place-items: center;
+            flex: none;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: var(--oxblood);
+            color: var(--surface);
+        }
+        .avatar svg { width: 30px; height: 30px; }
+        .profile-head h2 {
+            margin: 0;
+            font-family: var(--display);
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .profile-head p { margin: 2px 0 0; color: var(--muted); }
+
+        .tabs { display: flex; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+        .tab-label {
+            padding: 8px 16px;
+            margin-bottom: -1px;
+            font-weight: 600;
+            color: var(--oxblood);
+            border-bottom: 2px solid var(--oxblood);
+        }
+
+        /* ---------- Cards (also post history injected by JS) ---------- */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 10px 14px 10px;
+            margin-bottom: 8px;
+        }
+        #myPostsContainer .card {
+            border-left: 3px solid transparent;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        #myPostsContainer .card:hover {
+            border-color: rgba(2, 128, 144, 0.3);
+            border-left-color: var(--oxblood);
+            box-shadow: 0 2px 10px -4px rgba(0, 92, 105, 0.25);
+        }
+        .card h4 {
+            margin: 0 0 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--oxblood-deep);
+        }
+        .card p { margin: 4px 0 6px; line-height: 1.6; color: rgba(5, 34, 38, 0.85); }
+        .card small {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .card br { display: none; }
+
+        #myPostsContainer:empty::before {
+            content: "No posts yet. Your posts will appear here.";
+            display: block;
+            padding: 28px 14px;
+            text-align: center;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px dashed var(--line);
+            border-radius: 4px;
+        }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar .card { padding: 14px; margin-bottom: 0; }
+        .box-title {
+            margin: 0 0 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .sidebar h4 { margin: 0 0 4px; font-family: var(--display); font-size: 1.15rem; color: var(--ink); }
+        .sidebar p { margin: 0 0 10px; color: rgba(5, 34, 38, 0.75); }
+        .sidebar button { display: block; width: 100%; margin: 0 0 8px; }
+        #identityStatus {
+            min-height: 1.2em;
+            margin: 4px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: #2ea979;
+        }
+        .back-link {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--oxblood);
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* ---------- Buttons ---------- */
+        button {
+            padding: 7px 14px;
+            margin-right: 6px;
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--cream);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: background .2s, color .2s, border-color .2s;
+        }
+        .btn-blue { background: var(--oxblood); border-color: var(--oxblood); }
+        .btn-blue:hover { background: var(--oxblood-deep); border-color: var(--oxblood-deep); }
+        /* Refactored class .btn-red to a dark emerald/forest green to match the green theme instead of deep red */
+        .btn-red { background: transparent; color: #1b5e20; border-color: rgba(27, 94, 32, 0.5); }
+        .btn-red:hover { background: #1b5e20; color: var(--surface); border-color: #1b5e20; }
+
+        @media (max-width: 860px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a class="brand" href="/index.html"><span class="logo">S</span>SAUcial</a>
+    <a class="nav-link" href="/index.html">Feed</a>
+    <a class="nav-link current" href="/profile.html">My Profile</a>
+</div>
+
+<div class="container">
+    <div class="main-col">
+        <div class="profile-head">
+            <div class="avatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+            </div>
+            <div>
+                <h2>My Profile Settings</h2>
+                <p>Manage your identity and your posts</p>
+            </div>
+        </div>
+
+        <div class="tabs"><span class="tab-label">Posts</span></div>
+
+        <h3 style="display:none">My Post History</h3>
+        <div id="myPostsContainer"></div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="card">
+            <p class="box-title">Identity</p>
+            <h4>Identity Display Toggle</h4>
+            <p>Choose how you appear on new posts and comments:</p>
+            <button class="btn-blue" onclick="setIdentity(false)">Use Real Name</button>
+            <button class="btn-blue" onclick="setIdentity(true)">Use Anonymous Name</button>
+            <p id="identityStatus"></p>
+        </div>
+        <a class="back-link" href="/index.html">← Back to Feed</a>
+    </aside>
+</div>
+
+<script>
+    const token = localStorage.getItem('saucial_token');
+    if (!token) window.location.href = '/login.html';
+
+    async function loadMyPosts() {
+        const res = await fetch('http://localhost:5000/api/profile/posts', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const posts = await res.json();
+        const container = document.getElementById('myPostsContainer');
+        container.innerHTML = '';
+        
+        posts.forEach(post => {
+            container.innerHTML += `
+                <div class="card">
+                    <h4>${post.title}</h4>
+                    <p>${post.content}</p>
+                    <small>Votes: ${post.upvotes} / ${post.downvotes}</small>
+                    <br><br>
+                    <button class="btn-blue" onclick="editMyPost(${post.id})">Edit</button>
+                    <button class="btn-red" onclick="deleteMyPost(${post.id})">Delete</button>
+                </div>
+            `;
+        });
+    }
+
+    async function setIdentity(useAnon) {
+        await fetch('http://localhost:5000/api/profile/identity', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ use_anonymous: useAnon })
+        });
+        document.getElementById('identityStatus').innerText = `Identity switched to ${useAnon ? 'Anonymous' : 'Real Name'}.`;
+    }
+
+    async function deleteMyPost(postId) {
+        if (!confirm("Delete this post permanently?")) return;
+        await fetch(`http://localhost:5000/api/profile/posts/${postId}`, {
+            method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadMyPosts();
+    }
+
+    async function editMyPost(postId) {
+        const newContent = prompt("Enter your new post content (Original will be saved in version history):");
+        if (!newContent) return;
+        
+        await fetch(`http://localhost:5000/api/posts/${postId}/edit`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ content: newContent })
+        });
+        loadMyPosts();
+    }
+
+    loadMyPosts();
+</script>
+</body>
+</html>

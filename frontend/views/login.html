@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#028090">
+    <title>SAUcial - Login & Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --oxblood: #028090; 
+            --oxblood-deep: #005c69; 
+            --cream: #f0fbfa; 
+            --paper: #e8f6f3; 
+            --surface: #ffffff; 
+            --ink: #052226; 
+            --muted: rgba(5, 34, 38, 0.6);
+            --gold: #2ea979; 
+            --line: rgba(5, 34, 38, 0.14);
+            --display: "Reddit Sans", sans-serif;
+            --body: "Reddit Sans", sans-serif;
+            --mono: "Reddit Sans", monospace;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: var(--body);
+            font-size: 14px;
+            line-height: 1.5;
+            background: var(--paper);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+        }
+        :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            padding: 10px clamp(12px, 3vw, 28px);
+            background: var(--oxblood);
+            border-bottom: 2px solid var(--gold);
+        }
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--cream);
+        }
+        .logo {
+            display: inline-grid;
+            place-items: center;
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            background: var(--gold);
+            color: var(--surface);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .auth-wrap { display: flex; justify-content: center; padding: 40px 16px 64px; }
+        .container {
+            width: min(460px, 100%);
+            padding: 28px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+        }
+        .container h2 {
+            margin: 0 0 4px;
+            font-family: var(--display);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .tagline { margin: 0 0 18px; color: var(--muted); }
+
+        .toggle-btns {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        .toggle-btns button {
+            width: auto;
+            padding: 8px 16px;
+            margin-bottom: -1px;
+            font-weight: 600;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+        }
+        .toggle-btns button:hover { color: var(--oxblood); background: transparent; }
+        .toggle-btns button.active { color: var(--oxblood); border-bottom-color: var(--oxblood); }
+
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+        label { font-size: 13px; font-weight: 600; color: rgba(5, 34, 38, 0.8); }
+        input, select {
+            padding: 9px 10px;
+            font: inherit;
+            color: var(--ink);
+            background: #fdfefe;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--oxblood);
+            box-shadow: 0 0 0 3px rgba(2, 128, 144, 0.12);
+        }
+        select {
+            appearance: none;
+            padding-right: 30px;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23028090' stroke-width='1.5'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        button {
+            padding: 9px 16px;
+            font-family: var(--body);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--cream);
+            background: var(--oxblood);
+            border: 1px solid var(--oxblood);
+            border-radius: 4px;
+            transition: background .2s;
+        }
+        button:hover { background: var(--oxblood-deep); }
+        .submit-btn { width: 100%; margin-top: 4px; }
+
+        .hidden { display: none; }
+        .foot-note { margin: 18px 0 0; text-align: center; font-size: 12px; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a class="brand" href="/login.html"><span class="logo">S</span>SAUcial</a>
+</div>
+
+<div class="auth-wrap">
+    <div class="container">
+        <h2>Welcome to SAUcial</h2>
+        <p class="tagline">Log in or sign up to join the campus conversation.</p>
+
+        <div class="toggle-btns">
+            <button type="button" class="active" data-form="login" onclick="toggleForm('login')">Login</button>
+            <button type="button" data-form="register" onclick="toggleForm('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+
+        <!-- Registration Form -->
+        <form id="registerForm" class="hidden">
+            <div class="form-group">
+                <label>University Email</label>
+                <input type="email" id="regEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" required>
+            </div>
+            <div class="form-group">
+                <label>Real Name</label>
+                <input type="text" id="regRealName" required>
+            </div>
+            <div class="form-group">
+                <label>Anonymous Name (e.g., 'CampusNinja')</label>
+                <input type="text" id="regAnonName" required>
+            </div>
+            <div class="form-group">
+                <label>University Role (Flair)</label>
+                <select id="regFlair">
+                    <option value="student">Student</option>
+                    <option value="staff">Staff</option>
+                    <option value="faculty">Faculty</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">Register</button>
+        </form>
+
+        <p class="foot-note">Speak freely, speak kindly</p>
+    </div>
+</div>
+
+<script src="/public/js/auth.js"></script>
+<script>
+    function toggleForm(formType) {
+        document.getElementById('loginForm').classList.toggle('hidden', formType === 'register');
+        document.getElementById('registerForm').classList.toggle('hidden', formType === 'login');
+        document.querySelectorAll('.toggle-btns button').forEach(function (b) {
+            b.classList.toggle('active', b.dataset.form === formType);
+        });
+    }
+</script>
+</body>
+</html>
